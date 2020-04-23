@@ -1,0 +1,45 @@
+spring:
+  cloud:
+    azure:
+      auto-create-resources: true
+      credential-file-path: my.azureauth
+      eventhub:
+        checkpoint-storage-account: azuremigrationv2
+        namespace: <fill event hub namespace>
+      region: Central US
+      resource-group: azure-migration-rg
+    stream:
+      bindings:
+        blobnotification:
+          destination: objectnotificationeventhub
+          group: testconsumergroup
+        ingestionstatusconsumer:
+          destination: ingestion-status
+          group: testconsumergroup
+          content-type: application/json
+          nativeEncoding: true
+          consumer:
+            concurrency: 1
+            valueSerde: JsonSerde
+            requeue-rejected: true
+          errors:
+            destination: ingestion-status-errors
+            group: testconsumergroup
+        ingestionstatusproducer:
+          destination: ingestion-status
+          contentType: application/json
+          nativeEncoding: true
+          producer:
+            valueSerde: JsonSerde
+        uploadNotification:
+          destination: uploadnotificationeventhub
+        workspace:
+          destination: workspaceeventhub
+      kafka:
+        binder:
+          consumer-properties: {enable.auto.commit: true}
+  logging:
+    level:
+      org.springframework.messaging: ERROR
+      org.springframework.integration: ERROR
+      org.springframework.cloud: ERROR

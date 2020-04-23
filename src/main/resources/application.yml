@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    azure:
+      auto-create-resources: true
+      credential-file-path: my.azureauth
+      eventhub:
+        namespace: <fill event hub namespace>
+        checkpoint-storage-account: azuremigrationv2
+      region: Central US
+      resource-group: azure-migration-rg
+    stream:
+      bindings:
+        blobnotification:
+          destination: objectnotificationeventhub
+          group: $Default
+        ingestionstatus:
+          destination: ingestionstatuseventhub
+        uploadNotification:
+          destination: uploadnotificationeventhub
+        workspace:
+          destination: workspaceeventhub
+          group: $Default
